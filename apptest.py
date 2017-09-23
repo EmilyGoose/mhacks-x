@@ -31,8 +31,8 @@ def test():
     pos_tag = ('UNKNOWN', 'ADJ', 'ADP', 'ADV', 'CONJ', 'DET', 'NOUN', 'NUM',
                'PRON', 'PRT', 'PUNCT', 'VERB', 'X', 'AFFIX')
 
-    return_data = []
-    
+    return_data = [[]]
+
     # Initialises x as an index
     x = 0
 
@@ -40,10 +40,10 @@ def test():
         return_data[x].append({
             'word': str(token.text.content),
             'POS': pos_tag[token.part_of_speech.tag]
-        if token.text.content = ".":
+        })
+        if token.text.content == ".":
             x += 1
             return_data.append([])
-        })
 
     # Now that we have the data, process it into something we can draw on the canvas
     shapes = []
@@ -54,19 +54,19 @@ def test():
         'id': id,
         'relative_to': 'canvas'
     }
+    for sentence in return_data:
+        for item in sentence:
+            if item["POS"] == "NOUN":
+                if item["word"] in ["center", "left", "right"]:
+                    shape["position"] = item["word"]
+                if item["word"] in ["square", "circle", "triangle"]:
+                    shape["type"] = item["word"]
+                    shapes.append(shape)
 
-    for item in return_data:
-        if item["POS"] == "NOUN":
-            if item["word"] in ["center", "left", "right"]:
-                shape["position"] = item["word"]
-            if item["word"] in ["square", "circle", "triangle"]:
-                shape["type"] = item["word"]
-                shapes.append(shape)
-
-                shape = {
-                    'id': id,
-                    'relative_to': 'canvas'
-                }
+                    shape = {
+                        'id': id,
+                        'relative_to': 'canvas'
+                    }
 
     return jsonify(shapes)
 
