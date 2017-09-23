@@ -6,17 +6,29 @@ import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys.json"
 
-# Instantiates a client
-client = language.LanguageServiceClient()
 
-# The text to analyze
-text = u'Hello, world!'
-document = types.Document(
-    content=text,
-    type=enums.Document.Type.PLAIN_TEXT)
+def syntax_text(text):
+    """Detects syntax in the text."""
+    client = language.LanguageServiceClient()
 
-# Detects the sentiment of the text
-sentiment = client.analyze_sentiment(document=document).document_sentiment
+    # Instantiates a plain text document.
+    document = types.Document(
+        content=text,
+        type=enums.Document.Type.PLAIN_TEXT)
 
-print('Text: {}'.format(text))
-print('Sentiment: {}, {}'.format(sentiment.score, sentiment.magnitude))
+    # Detects syntax in the document. You can also analyze HTML with:
+    #   document.type == enums.Document.Type.HTML
+    tokens = client.analyze_syntax(document).tokens
+
+    # part-of-speech tags from enums.PartOfSpeech.Tag
+    pos_tag = ('UNKNOWN', 'ADJ', 'ADP', 'ADV', 'CONJ', 'DET', 'NOUN', 'NUM',
+               'PRON', 'PRT', 'PUNCT', 'VERB', 'X', 'AFFIX')
+
+    for token in tokens:
+        print(u'{}: {}'.format(pos_tag[token.part_of_speech.tag],
+                               token.text.content))
+
+
+text = "Draw a circle in the middle. To the left of the circle, draw a square."
+
+syntax_text(text)
