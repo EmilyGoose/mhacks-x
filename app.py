@@ -1,4 +1,7 @@
-# Imports the Google Cloud client library
+# Import flask
+from flask import Flask, request, jsonify
+
+# Import the Google Cloud client library
 from google.cloud import language
 from google.cloud.language import enums
 from google.cloud.language import types
@@ -6,29 +9,61 @@ import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys.json"
 
+app = Flask(__name__)
 
-def syntax_text(text):
-    """Detects syntax in the text."""
+
+@app.route('/syntax', methods=['GET'])
+def test():
+    data = request.args.to_dict()
+
     client = language.LanguageServiceClient()
 
     # Instantiates a plain text document.
     document = types.Document(
-        content=text,
+        content=data["text"].lower(),
         type=enums.Document.Type.PLAIN_TEXT)
 
     # Detects syntax in the document. You can also analyze HTML with:
-    #   document.type == enums.Document.Type.HTML
+    # document.type == enums.Document.Type.HTML
     tokens = client.analyze_syntax(document).tokens
 
     # part-of-speech tags from enums.PartOfSpeech.Tag
     pos_tag = ('UNKNOWN', 'ADJ', 'ADP', 'ADV', 'CONJ', 'DET', 'NOUN', 'NUM',
                'PRON', 'PRT', 'PUNCT', 'VERB', 'X', 'AFFIX')
 
+    return_data = []
+
     for token in tokens:
-        print(u'{}: {}'.format(pos_tag[token.part_of_speech.tag],
-                               token.text.content))
+        return_data.append({
+            'word': str(token.text.content),
+            'POS': pos_tag[token.part_of_speech.tag]
+        })
+
+    # Now that we have the data, process it into something we can draw on the canvas
+    shapes = []
+
+    id = 0
+
+    shape = {
+        'id': id,
+        'relative_to': 'canvas'
+    }
+
+    for item in return_data:
+        if item["POS"] == "NOUN":
+            if item["word"] in ["center", "left", "right"]:
+                shape["position"] = item["word"]
+            if item["word"] in ["square", "circle", "triangle"]:
+                shape["type"] = item["word"]
+                shapes.append(shape)
+
+                shape = {
+                    'id': id,
+                    'relative_to': 'canvas'
+                }
+
+    return jsonify(shapes)
 
 
-text = "Draw a circle in the middle. To the left of the circle, draw a square."
-
-syntax_text(text)
+if __name__ == '__main__':
+    app.run(debug=True)
