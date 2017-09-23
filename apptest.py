@@ -6,6 +6,7 @@ from google.cloud import language
 from google.cloud.language import enums
 from google.cloud.language import types
 import os
+from uuid import uuid4
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys.json"
 
@@ -48,10 +49,8 @@ def test():
     # Now that we have the data, process it into something we can draw on the canvas
     shapes = []
 
-    id = 0
-
     shape = {
-        'id': id,
+        'id': uuid4(),
         'relative_to': 'canvas'
     }
     for sentence in return_data:
@@ -64,7 +63,7 @@ def test():
                     shapes.append(shape)
 
                     shape = {
-                        'id': id,
+                        'id': uuid4(),
                         'relative_to': 'canvas'
                     }
 
