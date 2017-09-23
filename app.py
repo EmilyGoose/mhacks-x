@@ -8,6 +8,10 @@ from google.cloud.language import types
 import os
 from uuid import uuid4
 
+# Import wit and the associated API keys
+from wit import Wit
+from witkey import key
+
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys.json"
 
 app = Flask(__name__)
@@ -17,7 +21,9 @@ app = Flask(__name__)
 def test():
     data = request.args.to_dict()
 
-    client = language.LanguageServiceClient()
+    # Initialize the clients
+    google_client = language.LanguageServiceClient()
+    wit_client = Wit(key)
 
     # Instantiates a plain text document.
     document = types.Document(
@@ -26,7 +32,7 @@ def test():
 
     # Detects syntax in the document. You can also analyze HTML with:
     # document.type == enums.Document.Type.HTML
-    tokens = client.analyze_syntax(document).tokens
+    tokens = google_client.analyze_syntax(document).tokens
 
     # part-of-speech tags from enums.PartOfSpeech.Tag
     pos_tag = ('UNKNOWN', 'ADJ', 'ADP', 'ADV', 'CONJ', 'DET', 'NOUN', 'NUM',
@@ -47,60 +53,35 @@ def test():
             return_data.append([])
 
     # Now that we have the data, process it into something we can draw on the canvas
-    shapes = []
-
-
-
-    last_refs = {}
+    return_entities = []
 
     for sentence in return_data:
+        sentence_str = ""
+        for item in sentence:
+            sentence_str += item['word'] + " "
 
-        # New index and new shape
-        index = 0
-        shape = {
-            'id': uuid4(),
-            'relative_to': 'canvas'
-        }
+        print("sentence_str: " + sentence_str.strip("."))
+        try:
+            wit_response = wit_client.message(sentence_str.strip("."))
+            entities = wit_response['entities']
+        except:
+            break
+            
+        entity = {'intent': entities['intent'][0]['value']}
 
-        while index < len(sentence):
-            item = sentence[index]
-            if item["word"] == "the":
-                if sentence[index+1]["word"] in last_refs:
-                    shape['relative_to'] = last_refs[sentence[index+1]["word"]][-1]
-                elif sentence[index+1]["word"] in ["left", "center", "middle", "right", "top"]:
-                    shape['direction'] = sentence[index+1]['word']
+        if entity['intent'] == "draw_shape":
+            entity['type'] = entities['shape'][0]['value']
+        elif entity['intent'] == "add_text":
+            entity['text'] = entities['text'][0]['value'].strip('"').strip("'") # Get rid of quotes
 
-                index += 1
+        if 'origin' in entities:
+            entity['origin'] = entities['origin'][0]['value']
+        if 'direction' in entities:
+            entity['direction'] = entities['direction'][0]['value']
 
-            if item['word'] in ["an", "a"]:
-                if sentence[index + 1]['POS'] == "NOUN":
-                    item = sentence[index + 1]
-                    shape['type'] = item['word']
-                    if item['word'] in last_refs:
-                        last_refs[item['word']].append(shape['id'])
-                    else:
-                        last_refs[item['word']] = [shape['id']]
-                    index += 1
+        return_entities.append(entity)
 
-            index += 1
-
-        if 'type' in shape:
-            shapes.append(shape)
-
-        # for item in sentence:
-        #     if item["POS"] == "NOUN":
-        #         if item["word"] in ["center", "left", "right"]:
-        #             shape["position"] = item["word"]
-        #         if item["word"] in ["square", "circle", "triangle"]:
-        #             shape["type"] = item["word"]
-        #             shapes.append(shape)
-        #
-        #             shape = {
-        #                 'id': uuid4(),
-        #                 'relative_to': 'canvas'
-        #             }
-
-    return jsonify(shapes)
+    return jsonify(return_entities)
 
 
 if __name__ == '__main__':
