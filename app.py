@@ -92,7 +92,6 @@ def test():
             r = requests.get("https://api.giphy.com/v1/gifs/random" +
                              "?api_key=" + giphy_key +
                              "&tag=" + entity['query']
-                             #"&limit=1"
                              )
 
             entity['url'] = r.json()['data']['image_mp4_url']
