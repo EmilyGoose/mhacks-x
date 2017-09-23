@@ -60,3 +60,4 @@ typings/
 # API keys
 /keys.json
 /witkey.py
+/giphykey.py

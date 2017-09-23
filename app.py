@@ -1,6 +1,9 @@
 # Import flask
 from flask import Flask, request, jsonify
 
+# Import requests
+import requests
+
 # Import the Google Cloud client library
 from google.cloud import language
 from google.cloud.language import enums
@@ -11,6 +14,9 @@ from uuid import uuid4
 # Import wit and the associated API keys
 from wit import Wit
 from witkey import key
+
+# Import the giphy API key
+from giphykey import giphy_key
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys.json"
 
@@ -60,24 +66,36 @@ def test():
         for item in sentence:
             sentence_str += item['word'] + " "
 
-        print("sentence_str: " + sentence_str.strip("."))
         try:
             wit_response = wit_client.message(sentence_str.strip("."))
             entities = wit_response['entities']
         except:
             break
-            
+
         entity = {'intent': entities['intent'][0]['value']}
 
-        if entity['intent'] == "draw_shape":
+        if entity['intent'] == "draw_shape" and 'shape' in entities:
             entity['type'] = entities['shape'][0]['value']
-        elif entity['intent'] == "add_text":
+        elif entity['intent'] == "add_text" and 'text' in entities:
             entity['text'] = entities['text'][0]['value'].strip('"').strip("'") # Get rid of quotes
+        elif entity['intent'] == "add_gif" and 'query' in entities:
+            entity['query'] = entities['query'][0]['value']
 
         if 'origin' in entities:
-            entity['origin'] = entities['origin'][0]['value']
+            for item in entities['origin']:
+                if item['value'] != "the":
+                    entity['origin'] = item['value']
         if 'direction' in entities:
             entity['direction'] = entities['direction'][0]['value']
+        # Add giphy API
+        if 'query' in entity:
+            r = requests.get("https://api.giphy.com/v1/gifs/random" +
+                             "?api_key=" + giphy_key +
+                             "&tag=" + entity['query']
+                             #"&limit=1"
+                             )
+
+            entity['url'] = r.json()['data']['image_mp4_url']
 
         return_entities.append(entity)
 
