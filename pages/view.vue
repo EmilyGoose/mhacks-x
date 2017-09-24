@@ -10,6 +10,11 @@
         <v-card-text>
           {{ tokens }}
         </v-card-text>
+        <v-card-actions>
+          <v-btn flat to="/" >Back</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn primary flat nuxt @click.stop="send()" :loading="loading">Download</v-btn>
+        </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>

@@ -66,8 +66,10 @@ export default {
         console.log('Confidence: ' + event.results[0][0].confidence)
       }
 
-      recognition.onspeechend = function () {
+      recognition.onend = function () {
+        console.log("Speech has stopped being detected")
         recognition.stop()
+        cust.send()
       }
 
       recognition.onerror = function (event) {
