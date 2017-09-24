@@ -2,7 +2,7 @@
   <v-layout column justify-center align-center>
     <v-flex xs12 sm8 md6>
       <div class="text-xs-center">
-        <img src="/v.png" alt="Vuetify.js" class="mb-5" />
+        <img src="/logo.svg" alt="ARTiculate" class="mb-5" />
       </div>
       <v-card>
         <v-card-title class="headline">Tell us what you want your layout to look like.</v-card-title>
@@ -38,8 +38,8 @@ export default {
           text: this.directions
         }
       })
-      this.$store.commit('setTokens', tokens)
-      this.$router.redirect('/view')
+      this.$store.commit('setTokens', tokens.data)
+      this.$router.push('/view')
     }
   }
 }
