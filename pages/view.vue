@@ -41,10 +41,32 @@ export default {
         ctx.fillRect(100, 50, 100, 50)
         ctx.fill()
         ctx.closePath()
+      } else if (polygon.shape === 'triangle') {
+        drawPolygon(3)
+      } else if (polygon.shape === 'pentagon') {
+        drawPolygon(5)
+      } else if (polygon.shape === 'hexagon') {
+        drawPolygon(6)
+      } else if (polygon.shape === 'heptagon' || polygon.shape === 'septagon') {
+        drawPolygon(7)
+      } else if (polygon.shape === 'octagon') {
+        drawPolygon(8)
+      } else if (polygon.shape === 'nonagon') {
+        drawPolygon(9)
+      } else if (polygon.shape === 'decagon') {
+        drawPolygon(10)
       }
-      /*for (i = 0; i < n; i++) {
-        printf("%f %f\n",r * Math.cos(2 * Math.PI * i / n), r * Math.sin(2 * Math.PI * i / n));
-      }*/
+
+      function drawPolygon(n) {
+        const r = 50
+        ctx.beginPath()
+        ctx.moveTo(r * Math.cos(0), r * Math.sin(0))
+        for (let i = 1; i < n; i++) {
+          ctx.lineTo(r * Math.cos(2 * Math.PI * i / n), r * Math.sin(2 * Math.PI * i / n))
+        }
+        ctx.fill()
+        ctx.closePath()
+      }
     }
   },
   computed: {
