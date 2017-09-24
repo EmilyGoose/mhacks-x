@@ -5,6 +5,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Generated data
+dist
+.nuxt
+*.pyc
+
 # Runtime data
 pids
 *.pid
