@@ -12,12 +12,11 @@
             <v-text-field
               v-model="directions"
               name="directions"
-              label="Write your directions here..."
-
-              <v-btn fab dark small class="pink" @click.stop = startListen() >
-                <v-icon dark>microphone</v-icon>
-              </v-btn>
-            ></v-text-field>
+              label="Write your directions here...">
+            </v-text-field>
+            <v-btn fab dark small class="pink" @click.stop = "startListen()" >
+              <v-icon dark>mic</v-icon>
+            </v-btn>
           </v-form>
         </v-card-text>
         <v-card-actions>
