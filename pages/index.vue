@@ -37,10 +37,9 @@ export default {
   }),
   methods: {
     mounted () {
-      var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
-      var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
-      var cust = this;
-      var recognition = new SpeechRecognition();
+      let SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+      let doc = this;
+      let recognition = new SpeechRecognition();
 
       recognition.lang = 'en-US';
       recognition.continuous = true;
@@ -66,7 +65,7 @@ export default {
       }
 
       recognition.onerror = function(event) {
-        cust.error = 'Error occurred in recognition: ' + event.error;
+        doc.error = 'Error occurred in recognition: ' + event.error;
       }
     },
 
