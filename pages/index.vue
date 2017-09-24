@@ -58,8 +58,10 @@ export default {
         // The [0] returns the SpeechRecognitionAlternative at position 0.
         // We then return the transcript property of the SpeechRecognitionAlternative object
 
-        var words = event.results.transcript
+        var words = event.results[0][0].transcript
+        cust.directions = words
         console.log('Words:' + words)
+        // console.log('Recognition result list:' + event.results[0][0].transcript)
         console.log('Confidence: ' + event.results[0][0].confidence)
       }
 
