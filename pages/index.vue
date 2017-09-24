@@ -55,14 +55,14 @@ export default {
         // The [0] returns the SpeechRecognitionAlternative at position 0.
         // We then return the transcript property of the SpeechRecognitionAlternative object
 
-        var words = event.results.transcript;
+        let words = event.results.transcript;
         console.log("Words:" + words);
         console.log('Confidence: ' + event.results[0][0].confidence);
-      }
+      };
 
       recognition.onspeechend = function() {
         recognition.stop();
-      }
+      };
 
       recognition.onerror = function(event) {
         doc.error = 'Error occurred in recognition: ' + event.error;
@@ -79,8 +79,8 @@ export default {
         params: {
           text: this.directions
         }
-      })
-      this.$store.commit('setTokens', tokens)
+      });
+      this.$store.commit('setTokens', tokens);
       this.$router.redirect('/view')
     }
   }
