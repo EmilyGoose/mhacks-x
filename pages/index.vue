@@ -21,7 +21,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn primary flat nuxt @click.stop="send()">Continue</v-btn>
+          <v-btn primary flat nuxt @click.stop="send()" :loading="loading">Continue</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -34,7 +34,8 @@ var recognition
 export default {
   data: () => ({
     directions: '',
-    error: ''
+    error: '',
+    loading: false
   }),
   methods: {
 
@@ -76,6 +77,7 @@ export default {
     },
 
     async send () {
+      this.loading = true
       const tokens = await axios.get('/syntax', {
         params: {
           text: this.directions

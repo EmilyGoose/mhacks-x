@@ -6,8 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # Generated data
-dist
-.nuxt
+dist/
+.nuxt/
 *.pyc
 
 # Runtime data

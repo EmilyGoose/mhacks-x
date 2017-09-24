@@ -22,12 +22,6 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys.json"
 
 app = Flask(__name__)
 
-
-@app.route('/', methods=['GET'])
-def home():
-    return "Hello, world!"
-
-
 @app.route('/syntax', methods=['GET'])
 def test():
     data = request.args.to_dict()
