@@ -115,7 +115,8 @@ def test():
             entity['url'] = r.json()['data']['image_mp4_url']
         if 'colour' in entities:
             entity['colour'] = entities['colour'][0]['value']
-            entity['origin_ref'] = "the " + entity['colour'] + " " + entity['shape']
+            if 'shape' in entities:
+                entity['origin_ref'] = "the " + entity['colour'] + " " + entity['shape']
         else:
             entity['origin_ref'] = "the " + entity['shape']
 
