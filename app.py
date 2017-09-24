@@ -82,12 +82,29 @@ def test():
         elif entity['intent'] == "draw_icon" and 'query' in entities:
             entity['query'] = entities['query'][0]['value']
 
-        if 'origin' in entities:
-            for item in entities['origin']:
-                if item['value'] != "the":
-                    entity['origin'] = item['value']
+        directions = {
+            "left": [-1, 0],
+            "right": [1, 0],
+            "below": [0, 1],
+            "above": [0, -1]
+        }
+
+        entity['position'] = [1, 1]
+
         if 'direction' in entities:
             entity['direction'] = entities['direction'][0]['value']
+            if 'origin' in entities:
+                for item in entities['origin']:
+                    if item['value'] != "the":
+                        entity['origin'] = item['value']
+                        if entity['origin'] == "the canvas":
+                            entity['position'][0] += directions[entity['direction']][0]
+                            entity['position'][1] += directions[entity['direction']][1]
+                        else:
+                            for i in return_entities:
+                                if ('origin_ref' in i) and (i['origin_ref'] == entity['origin']):
+                                    entity['position'][0] = i['position'][0] + directions[entity['direction']][0]
+                                    entity['position'][1] = i['position'][1] + directions[entity['direction']][1]
         if 'query' in entity:
             r = requests.get("https://api.giphy.com/v1/gifs/random" +
                              "?api_key=" + giphy_key +
@@ -98,8 +115,11 @@ def test():
             entity['url'] = r.json()['data']['image_mp4_url']
         if 'colour' in entities:
             entity['colour'] = entities['colour'][0]['value']
-        if 'size' in entities:
-            entity['size'] = entities['size'][0]['value']
+            if 'shape' in entities:
+                entity['origin_ref'] = "the " + entity['colour'] + " " + entity['shape']
+        elif 'shape' in entities:
+            entity['origin_ref'] = "the " + entity['shape']
+
 
         return_entities.append(entity)
 
