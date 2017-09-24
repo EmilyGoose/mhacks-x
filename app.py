@@ -23,6 +23,11 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "keys.json"
 app = Flask(__name__)
 
 
+@app.route('/', methods=['GET'])
+def home():
+    return "Hello, world!"
+
+
 @app.route('/syntax', methods=['GET'])
 def test():
     data = request.args.to_dict()
@@ -87,13 +92,13 @@ def test():
                     entity['origin'] = item['value']
         if 'direction' in entities:
             entity['direction'] = entities['direction'][0]['value']
-        # Add giphy API
         if 'query' in entity:
             r = requests.get("https://api.giphy.com/v1/gifs/random" +
                              "?api_key=" + giphy_key +
                              "&tag=" + entity['query']
                              )
 
+        # Add giphy API
             entity['url'] = r.json()['data']['image_mp4_url']
 
         return_entities.append(entity)
@@ -102,4 +107,4 @@ def test():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=8080, debug=True)
