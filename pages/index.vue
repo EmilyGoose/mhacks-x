@@ -13,9 +13,10 @@
               v-model="directions"
               name="directions"
               label="Write your directions here..."
-              multi-line
-              append-icon="microphone"
-              :append-icon-cb="startListen()"
+
+              <v-btn fab dark small class="pink" @click.stop = startListen() >
+                <v-icon dark>microphone</v-icon>
+              </v-btn>
             ></v-text-field>
           </v-form>
         </v-card-text>
@@ -30,23 +31,24 @@
 
 <script>
 import axios from 'axios'
+var recognition
 export default {
   data: () => ({
     directions: '',
-    error: '',
+    error: ''
   }),
   methods: {
-    mounted () {
-      var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
-      var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
-      var cust = this;
-      var recognition = new SpeechRecognition();
 
-      recognition.lang = 'en-US';
-      recognition.continuous = true;
-      recognition.interimResults = false;
+    startListen () {
+      var SpeechRecognition = self.SpeechRecognition || self.webkitSpeechRecognition
+      var cust = this
+      recognition = new SpeechRecognition()
 
-      recognition.onresult = function(event) {
+      recognition.lang = 'en-US'
+      recognition.continuous = true
+      recognition.interimResults = false
+
+      recognition.onresult = function (event) {
         // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
         // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
         // It has a getter so it can be accessed like an array
@@ -56,23 +58,22 @@ export default {
         // The [0] returns the SpeechRecognitionAlternative at position 0.
         // We then return the transcript property of the SpeechRecognitionAlternative object
 
-        var words = event.results.transcript;
-        console.log("Words:" + words);
-        console.log('Confidence: ' + event.results[0][0].confidence);
+        var words = event.results.transcript
+        console.log('Words:' + words)
+        console.log('Confidence: ' + event.results[0][0].confidence)
       }
 
-      recognition.onspeechend = function() {
-        recognition.stop();
+      recognition.onspeechend = function () {
+        recognition.stop()
       }
 
-      recognition.onerror = function(event) {
-        cust.error = 'Error occurred in recognition: ' + event.error;
+      recognition.onerror = function (event) {
+        cust.error = 'Error occurred in recognition: ' + event.error
       }
-    },
 
-    startListen(){
-      recognition.start();
-      console.log('Ready to recieve input.');
+      recognition.start()
+      console.log(recognition)
+      console.log('Ready to recieve input.')
     },
 
     async send () {
