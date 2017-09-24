@@ -22,6 +22,16 @@ export default {
   }),
   mounted () {
     const ctx = document.getElementById('artwork').getContext('2d')
+    function drawPolygon (n) {
+      const r = 50
+      ctx.beginPath()
+      ctx.moveTo(r * Math.cos(0), r * Math.sin(0))
+      for (let i = 1; i < n; i++) {
+        ctx.lineTo(r * Math.cos(2 * Math.PI * i / n), r * Math.sin(2 * Math.PI * i / n))
+      }
+      ctx.fill()
+      ctx.closePath()
+    }
     for (const polygon of this.tokens) {
       if (polygon.colour) {
         ctx.fillStyle = polygon.colour
@@ -55,17 +65,6 @@ export default {
         drawPolygon(9)
       } else if (polygon.shape === 'decagon') {
         drawPolygon(10)
-      }
-
-      function drawPolygon(n) {
-        const r = 50
-        ctx.beginPath()
-        ctx.moveTo(r * Math.cos(0), r * Math.sin(0))
-        for (let i = 1; i < n; i++) {
-          ctx.lineTo(r * Math.cos(2 * Math.PI * i / n), r * Math.sin(2 * Math.PI * i / n))
-        }
-        ctx.fill()
-        ctx.closePath()
       }
     }
   },

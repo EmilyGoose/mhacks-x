@@ -12,7 +12,8 @@
             <v-text-field
               v-model="directions"
               name="directions"
-              label="Write your directions here...">
+              label="Write your directions here..."
+              multi-line>
             </v-text-field>
             <v-btn fab dark small class="pink" @click.stop = "startListen()" >
               <v-icon dark>mic</v-icon>
@@ -46,7 +47,7 @@ export default {
 
       recognition.lang = 'en-US'
       recognition.continuous = true
-      recognition.interimResults = false
+      recognition.interimResults = true
 
       recognition.onresult = function (event) {
         // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
