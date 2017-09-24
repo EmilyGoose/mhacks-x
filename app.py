@@ -85,6 +85,8 @@ def test():
             entity['text'] = entities['text'][0]['value'].strip('"').strip("'") # Get rid of quotes
         elif entity['intent'] == "add_gif" and 'query' in entities:
             entity['query'] = entities['query'][0]['value']
+        elif entity['intent'] == "draw_icon" and 'query' in entities:
+            entity['query'] = entities['query'][0]['value']
 
         if 'origin' in entities:
             for item in entities['origin']:
@@ -97,6 +99,8 @@ def test():
                              "?api_key=" + giphy_key +
                              "&tag=" + entity['query']
                              )
+        if 'size' in entity:
+            entity['size'] = entities['size'][0]['value']
 
         # Add giphy API
             entity['url'] = r.json()['data']['image_mp4_url']
