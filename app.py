@@ -75,11 +75,11 @@ def test():
 
         if entity['intent'] == "draw_shape" and 'shape' in entities:
             entity['shape'] = entities['shape'][0]['value']
-            entity['colour'] = entities['colour'][0]['value']
         elif entity['intent'] == "add_text" and 'text' in entities:
             entity['text'] = entities['text'][0]['value'].strip('"').strip("'") # Get rid of quotes
-            entity['colour'] = entities['colour'][0]['value']
         elif entity['intent'] == "add_gif" and 'query' in entities:
+            entity['query'] = entities['query'][0]['value']
+        elif entity['intent'] == "draw_icon" and 'query' in entities:
             entity['query'] = entities['query'][0]['value']
 
         if 'origin' in entities:
@@ -93,6 +93,10 @@ def test():
                              "?api_key=" + giphy_key +
                              "&tag=" + entity['query']
                              )
+        if 'colour' in entities:
+            entity['colour'] = entities['colour'][0]['value']
+        if 'size' in entities:
+            entity['size'] = entities['size'][0]['value']
 
         # Add giphy API
             entity['url'] = r.json()['data']['image_mp4_url']
