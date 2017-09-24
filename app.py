@@ -117,7 +117,7 @@ def test():
             entity['colour'] = entities['colour'][0]['value']
             if 'shape' in entities:
                 entity['origin_ref'] = "the " + entity['colour'] + " " + entity['shape']
-        else:
+        elif 'shape' in entities:
             entity['origin_ref'] = "the " + entity['shape']
 
 
