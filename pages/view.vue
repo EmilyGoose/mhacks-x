@@ -45,37 +45,6 @@ export default {
       if (polygon.colour) {
         ctx.fillStyle = polygon.colour
       }
-<<<<<<< HEAD
-      if (polygon.shape === 'circle') {
-        ctx.beginPath()
-        ctx.ellipse(150, 100, 50, 50, 0, 0, 2 * Math.PI)
-        ctx.fill()
-        ctx.closePath()
-      } else if (polygon.shape === 'square') {
-        ctx.beginPath()
-        ctx.fillRect(125, 75, 50, 50)
-        ctx.fill()
-        ctx.closePath()
-      } else if (polygon.shape === 'rectangle') {
-        ctx.beginPath()
-        ctx.fillRect(100, 50, 100, 50)
-        ctx.fill()
-        ctx.closePath()
-      } else if (polygon.shape === 'triangle') {
-        drawPolygon(3)
-      } else if (polygon.shape === 'pentagon') {
-        drawPolygon(5)
-      } else if (polygon.shape === 'hexagon') {
-        drawPolygon(6)
-      } else if (polygon.shape === 'heptagon' || polygon.shape === 'septagon') {
-        drawPolygon(7)
-      } else if (polygon.shape === 'octagon') {
-        drawPolygon(8)
-      } else if (polygon.shape === 'nonagon') {
-        drawPolygon(9)
-      } else if (polygon.shape === 'decagon') {
-        drawPolygon(10)
-=======
       if (polygon.intent === 'draw_shape') {
         function drawPolygon(n) {
           const r = 50
@@ -120,7 +89,6 @@ export default {
       } else if (polygon.intent === 'add_text') {
         ctx.font = '48px serif';
         ctx.fillText(polygon.text, 150, 100);
->>>>>>> origin/master
       }
     }
   },
