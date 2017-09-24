@@ -2,7 +2,7 @@
   <v-layout column justify-center align-center>
     <v-flex xs12 sm8 md6>
       <div class="text-xs-center">
-        <img src="/v.png" alt="Vuetify.js" class="mb-5" />
+        <img src="/logo.svg" alt="ARTiculate" class="mb-5" />
       </div>
       <v-card>
         <v-card-title class="headline">Tell us what you want your layout to look like.</v-card-title>
@@ -12,11 +12,11 @@
             <v-text-field
               v-model="directions"
               name="directions"
-              label="Write your directions here..."
-              multi-line
-              append-icon="microphone"
-              :append-icon-cb="startListen()"
-            ></v-text-field>
+              label="Write your directions here...">
+            </v-text-field>
+            <v-btn fab dark small class="pink" @click.stop = "startListen()" >
+              <v-icon dark>mic</v-icon>
+            </v-btn>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -30,22 +30,24 @@
 
 <script>
 import axios from 'axios'
+var recognition
 export default {
   data: () => ({
     directions: '',
-    error: '',
+    error: ''
   }),
   methods: {
-    mounted () {
-      let SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
-      let doc = this;
-      let recognition = new SpeechRecognition();
 
-      recognition.lang = 'en-US';
-      recognition.continuous = true;
-      recognition.interimResults = false;
+    startListen () {
+      var SpeechRecognition = self.SpeechRecognition || self.webkitSpeechRecognition
+      var cust = this
+      recognition = new SpeechRecognition()
 
-      recognition.onresult = function(event) {
+      recognition.lang = 'en-US'
+      recognition.continuous = true
+      recognition.interimResults = false
+
+      recognition.onresult = function (event) {
         // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
         // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
         // It has a getter so it can be accessed like an array
@@ -55,23 +57,22 @@ export default {
         // The [0] returns the SpeechRecognitionAlternative at position 0.
         // We then return the transcript property of the SpeechRecognitionAlternative object
 
-        let words = event.results.transcript;
-        console.log("Words:" + words);
-        console.log('Confidence: ' + event.results[0][0].confidence);
-      };
-
-      recognition.onspeechend = function() {
-        recognition.stop();
-      };
-
-      recognition.onerror = function(event) {
-        doc.error = 'Error occurred in recognition: ' + event.error;
+        var words = event.results.transcript
+        console.log('Words:' + words)
+        console.log('Confidence: ' + event.results[0][0].confidence)
       }
-    },
 
-    startListen(){
-      recognition.start();
-      console.log('Ready to recieve input.');
+      recognition.onspeechend = function () {
+        recognition.stop()
+      }
+
+      recognition.onerror = function (event) {
+        cust.error = 'Error occurred in recognition: ' + event.error
+      }
+
+      recognition.start()
+      console.log(recognition)
+      console.log('Ready to recieve input.')
     },
 
     async send () {
@@ -79,9 +80,9 @@ export default {
         params: {
           text: this.directions
         }
-      });
-      this.$store.commit('setTokens', tokens);
-      this.$router.redirect('/view')
+      })
+      this.$store.commit('setTokens', tokens.data)
+      this.$router.push('/view')
     }
   }
 }

@@ -1,5 +1,5 @@
 # Import flask
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 
 # Import requests
 import requests
@@ -80,9 +80,11 @@ def test():
         entity = {'intent': entities['intent'][0]['value']}
 
         if entity['intent'] == "draw_shape" and 'shape' in entities:
-            entity['type'] = entities['shape'][0]['value']
+            entity['shape'] = entities['shape'][0]['value']
+            entity['colour'] = entities['colour'][0]['value']
         elif entity['intent'] == "add_text" and 'text' in entities:
             entity['text'] = entities['text'][0]['value'].strip('"').strip("'") # Get rid of quotes
+            entity['colour'] = entities['colour'][0]['value']
         elif entity['intent'] == "add_gif" and 'query' in entities:
             entity['query'] = entities['query'][0]['value']
         elif entity['intent'] == "draw_icon" and 'query' in entities:
@@ -108,6 +110,14 @@ def test():
         return_entities.append(entity)
 
     return jsonify(return_entities)
+
+@app.route('/')
+def send_index():
+    return send_from_directory('dist', 'index.html')
+app.route('/view')(send_index)
+@app.route('/<path:path>')
+def send_static(path):
+    return send_from_directory('dist', path)
 
 
 if __name__ == '__main__':

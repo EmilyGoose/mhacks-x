@@ -38,10 +38,9 @@
       return {
         drawer: true,
         items: [
-          { to: '/', title: 'Welcome', icon: 'apps' },
-          { to: '/inspire', title: 'Inspire', icon: 'bubble_chart' }
+          { to: '/', title: 'Welcome', icon: 'apps' }
         ],
-        title: 'MHacks X'
+        title: 'ARTiculate'
       }
     }
   }
